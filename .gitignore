@@ -1,0 +1,45 @@
+# Backup files created by install script
+*.backup.*
+*.bak
+
+# Neovim backup files (in case they end up in the repo)
+*.backup.tar.gz
+nvim-config-backup-*.tar.gz
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Log files
+*.log
+
+# Test files (if you add any)
+test/
+tests/
+*.test
+
+# Local environment settings
+.env
+.envrc
+
+# Personal notes or TODO files you don't want to commit
+TODO.local
+NOTES.local
+personal/
