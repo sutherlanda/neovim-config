@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Neovim Configuration Installation Script
-# This script installs Neovim, config, and all required tooling
+# This script installs Neovim and configuration files
 
 set -e  # Exit on error
 
@@ -134,216 +134,6 @@ else
     fi
 fi
 
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" &> /dev/null
-}
-
-# Function to install npm packages globally
-install_npm_global() {
-    if command_exists npm; then
-        echo "📦 Installing npm packages..."
-        npm install -g \
-            bash-language-server \
-            typescript \
-            typescript-language-server \
-            eslint_d \
-            @fsouza/prettierd
-        echo -e "${GREEN}✓ npm packages installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ npm not found. Skipping npm packages.${NC}"
-        echo "  Install Node.js to get: bash-language-server, typescript-language-server, eslint_d, prettierd"
-    fi
-}
-
-# Function to install Python packages
-install_python_packages() {
-    if command_exists pip3; then
-        echo "📦 Installing Python packages..."
-        pip3 install --user pyright autopep8
-        echo -e "${GREEN}✓ Python packages installed${NC}"
-    elif command_exists pip; then
-        echo "📦 Installing Python packages..."
-        pip install --user pyright autopep8
-        echo -e "${GREEN}✓ Python packages installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ pip not found. Skipping Python packages.${NC}"
-        echo "  Install Python to get: pyright, autopep8"
-    fi
-}
-
-# Function to install Rust tools
-install_rust_tools() {
-    if command_exists cargo; then
-        echo "📦 Installing Rust tools..."
-        cargo install stylua
-        
-        # Check if rust-analyzer is available via rustup
-        if command_exists rustup; then
-            echo "📦 Installing rust-analyzer..."
-            rustup component add rust-analyzer rustfmt clippy
-        fi
-        echo -e "${GREEN}✓ Rust tools installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ Cargo not found. Skipping Rust tools.${NC}"
-        echo "  Install Rust to get: stylua, rust-analyzer, rustfmt"
-    fi
-}
-
-# Function to install Go tools
-install_go_tools() {
-    if command_exists go; then
-        echo "📦 Installing Go tools..."
-        go install golang.org/x/tools/gopls@latest
-        echo -e "${GREEN}✓ Go tools installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ Go not found. Skipping gopls.${NC}"
-        echo "  Install Go to get: gopls"
-    fi
-}
-
-# Function to install system packages on macOS
-install_macos_packages() {
-    if command_exists brew; then
-        echo "📦 Installing macOS packages via Homebrew..."
-        
-        # Optional but useful tools
-        local optional_tools=()
-        
-        ! command_exists ag && optional_tools+=(the_silver_searcher)
-        ! command_exists rg && optional_tools+=(ripgrep)
-        ! command_exists fd && optional_tools+=(fd)
-        ! command_exists jq && optional_tools+=(jq)
-        ! command_exists ctags && optional_tools+=(universal-ctags)
-        
-        if [ ${#optional_tools[@]} -gt 0 ]; then
-            echo "Installing optional tools: ${optional_tools[*]}"
-            brew install "${optional_tools[@]}"
-        fi
-        
-        echo -e "${GREEN}✓ macOS packages installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ Homebrew not found. Skipping system packages.${NC}"
-        echo "  Install Homebrew to get optional tools: ripgrep, fd, jq, ctags, etc."
-    fi
-}
-
-# Function to install system packages on Linux
-install_linux_packages() {
-    if command_exists apt-get; then
-        echo "📦 Installing Linux packages via apt..."
-        echo "This may require sudo password for system packages."
-        
-        local optional_tools=()
-        
-        ! command_exists ag && optional_tools+=(silversearcher-ag)
-        ! command_exists rg && optional_tools+=(ripgrep)
-        ! command_exists fd && optional_tools+=(fd-find)
-        ! command_exists jq && optional_tools+=(jq)
-        ! command_exists ctags && optional_tools+=(universal-ctags)
-        ! command_exists xclip && optional_tools+=(xclip)
-        
-        if [ ${#optional_tools[@]} -gt 0 ]; then
-            echo "Installing optional tools: ${optional_tools[*]}"
-            sudo apt-get update
-            sudo apt-get install -y "${optional_tools[@]}"
-        fi
-        
-        echo -e "${GREEN}✓ Linux packages installed${NC}"
-    elif command_exists pacman; then
-        echo "📦 Installing Linux packages via pacman..."
-        echo "This may require sudo password for system packages."
-        
-        local optional_tools=()
-        
-        ! command_exists ag && optional_tools+=(the_silver_searcher)
-        ! command_exists rg && optional_tools+=(ripgrep)
-        ! command_exists fd && optional_tools+=(fd)
-        ! command_exists jq && optional_tools+=(jq)
-        ! command_exists ctags && optional_tools+=(ctags)
-        ! command_exists xclip && optional_tools+=(xclip)
-        
-        if [ ${#optional_tools[@]} -gt 0 ]; then
-            echo "Installing optional tools: ${optional_tools[*]}"
-            sudo pacman -Sy --noconfirm "${optional_tools[@]}"
-        fi
-        
-        echo -e "${GREEN}✓ Linux packages installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ No supported package manager found (apt/pacman).${NC}"
-        echo "  You may need to manually install: ripgrep, fd, jq, ctags, xclip"
-    fi
-}
-
-# Function to install Nix formatter
-install_nix_tools() {
-    if command_exists nix-env; then
-        echo "📦 Installing Nix tools..."
-        nix-env -iA nixpkgs.alejandra
-        echo -e "${GREEN}✓ Nix tools installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ Nix not found. Skipping alejandra formatter.${NC}"
-        echo "  Install Nix to get: alejandra"
-    fi
-}
-
-# Main installation function for tooling
-install_tooling() {
-    echo ""
-    echo "🔧 Installing Language Servers and Formatters"
-    echo "=============================================="
-    echo ""
-    
-    read -p "Do you want to install all required tooling? (y/n) " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Skipping tooling installation."
-        return
-    fi
-    echo ""
-    
-    # Install language-specific tools
-    install_npm_global
-    echo ""
-    install_python_packages
-    echo ""
-    install_rust_tools
-    echo ""
-    install_go_tools
-    echo ""
-    install_nix_tools
-    echo ""
-    
-    # Install system packages
-    if [ "$OS" = "macos" ]; then
-        install_macos_packages
-    elif [ "$OS" = "linux" ]; then
-        install_linux_packages
-    fi
-    
-    echo ""
-    echo -e "${GREEN}✓ Tooling installation complete${NC}"
-    echo ""
-    
-    # Summary of what still needs manual installation
-    echo "📋 Manual Installation Required:"
-    echo ""
-    
-    if ! command_exists haskell-language-server; then
-        echo "  • Haskell Language Server (hls)"
-        echo "    Install with: cabal install haskell-language-server"
-        echo ""
-    fi
-    
-    if ! command_exists jdtls && ! [ -d "$HOME/.local/share/eclipse.jdt.ls" ]; then
-        echo "  • Java Language Server (jdtls)"
-        echo "    Download from: https://github.com/eclipse-jdtls/eclipse.jdt.ls"
-        echo ""
-    fi
-    
-    echo "Run 'nvim' and then ':checkhealth' to verify all tools are working."
-}
-
 # Check if config files exist in repo
 if [ ! -d "$CONFIG_SOURCE" ]; then
     echo -e "${RED}❌ Config directory not found: $CONFIG_SOURCE${NC}"
@@ -396,11 +186,6 @@ else
 fi
 echo ""
 
-# Install tooling
-install_tooling
-
-# Launch Neovim to install plugins
-echo ""
 echo "🎉 Installation complete!"
 echo ""
 echo "Configuration installed to: $NVIM_CONFIG_DIR"
@@ -410,7 +195,29 @@ echo "1. Launch Neovim: nvim"
 echo "2. Lazy.nvim will automatically install all plugins"
 echo "3. Wait for all plugins to install (this may take a minute)"
 echo "4. Run :checkhealth to verify everything is working"
-echo "5. Run :LspInfo in a file to check language server status"
+echo ""
+echo "📋 External tools needed (install separately):"
+echo ""
+echo "Language Servers:"
+echo "  • rust-analyzer     - Rust"
+echo "  • pyright          - Python (via pipx)"
+echo "  • gopls            - Go"
+echo "  • typescript-ls    - TypeScript/JavaScript (via npm)"
+echo "  • bash-ls          - Bash (via npm)"
+echo ""
+echo "Formatters:"
+echo "  • stylua           - Lua (via cargo)"
+echo "  • autopep8         - Python (via pipx)"
+echo "  • prettierd        - JS/TS/JSON (via npm)"
+echo "  • eslint_d         - JS/TS (via npm)"
+echo "  • rustfmt          - Rust (via rustup)"
+echo ""
+echo "Optional Tools:"
+echo "  • ripgrep or ag    - Better search"
+echo "  • fd               - Better find"
+echo "  • jq               - JSON formatting"
+echo ""
+echo "See README.md for installation instructions."
 echo ""
 read -p "Would you like to launch Neovim now? (y/n) " -n 1 -r
 echo ""
