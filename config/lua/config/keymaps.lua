@@ -12,8 +12,8 @@ vim.keymap.set("n", "<leader>j", "<cmd>%!jq<CR>", opts) -- pretty format JSON
 vim.keymap.set("n", "<leader>pc", "<cmd>pclose<CR>", opts) -- close preview window
 
 -- Search (Telescope)
-vim.keymap.set("", "<C-p>", "<cmd>Telescope find_files<CR>", opts)
-vim.keymap.set("", "<C-\\>", "<cmd>Telescope live_grep<CR>", opts)
+vim.keymap.set("n", "<C-p>", "<cmd>Telescope find_files<CR>", opts)
+vim.keymap.set("n", "<C-\\>", "<cmd>Telescope live_grep<CR>", opts)
 vim.keymap.set("n", "<leader>b", "<cmd>Telescope buffers<CR>", opts)
 
 -- Nvim-tree

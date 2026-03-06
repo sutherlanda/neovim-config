@@ -72,9 +72,7 @@ return {
 
 				-- Follow URL with gx
 				follow_url_func = function(url)
-					vim.fn.jobstart({ "xdg-open", url }) -- Linux
-					-- vim.fn.jobstart({"open", url}) -- macOS
-					-- vim.cmd("!start " .. url) -- Windows
+					vim.fn.jobstart({ "open", url })
 				end,
 
 				-- UI settings

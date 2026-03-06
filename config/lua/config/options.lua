@@ -12,7 +12,6 @@ vim.opt.number = true
 vim.opt.cursorline = true
 vim.opt.signcolumn = "yes"
 vim.opt.hidden = true
-vim.opt.updatetime = 300
 vim.opt.hlsearch = true
 vim.opt.foldenable = false
 vim.opt.tabstop = 2
