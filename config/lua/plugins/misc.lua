@@ -25,4 +25,5 @@ return {
 		"sansyrox/vim-python-virtualenv",
 		ft = "python",
 	},
+	{ "folke/snacks.nvim" },
 }

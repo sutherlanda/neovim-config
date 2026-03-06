@@ -34,3 +34,27 @@ vim.keymap.set("n", "<leader>qo", "<cmd>copen<CR>", opts)
 vim.keymap.set("n", "<leader>qc", "<cmd>cclose<CR>", opts)
 vim.keymap.set("n", "<leader>qp", "<cmd>cprevious<CR>", opts)
 vim.keymap.set("n", "<leader>qn", "<cmd>cnext<CR>", opts)
+
+-- Copy file paths for pasting into Claude Code
+-- Usage: ,yr then paste into Claude prompt as context
+vim.keymap.set("n", ",yr", function()
+	local path = vim.fn.fnamemodify(vim.fn.expand("%"), ":~:.")
+	vim.fn.setreg("+", path)
+	vim.notify("Copied: " .. path, vim.log.levels.INFO)
+end, { desc = "Copy relative file path" })
+
+vim.keymap.set("n", ",ya", function()
+	local path = vim.fn.expand("%:p")
+	vim.fn.setreg("+", path)
+	vim.notify("Copied: " .. path, vim.log.levels.INFO)
+end, { desc = "Copy absolute file path" })
+
+-- Copy current line + file path (great for pointing Claude at specific code)
+-- Output format: "path/to/file.lua:42"
+vim.keymap.set("n", ",yl", function()
+	local path = vim.fn.fnamemodify(vim.fn.expand("%"), ":~:.")
+	local line = vim.fn.line(".")
+	local ref = path .. ":" .. line
+	vim.fn.setreg("+", ref)
+	vim.notify("Copied: " .. ref, vim.log.levels.INFO)
+end, { desc = "Copy file:line reference" })
