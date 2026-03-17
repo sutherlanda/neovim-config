@@ -37,6 +37,7 @@ vim.keymap.set("n", "<leader>qn", "<cmd>cnext<CR>", opts)
 
 -- Copy file paths for pasting into Claude Code
 -- Usage: ,yr then paste into Claude prompt as context
+-- ,C prefix used for Claude (see plugins/claude.lua)
 vim.keymap.set("n", ",yr", function()
 	local path = vim.fn.fnamemodify(vim.fn.expand("%"), ":~:.")
 	vim.fn.setreg("+", path)
